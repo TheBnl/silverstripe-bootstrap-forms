@@ -6,13 +6,17 @@ namespace Axllent\BootstrapForms;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Extension;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\FormField;
+use SilverStripe\UserForms\FormField\UserFormsCheckboxSetField;
 
 class BootstrapFormField extends Extension
 {
 
     private static $is_admin_url = null;
 
-    public function onBeforeRender($form_field)
+    public function onBeforeRender(FormField $formField)
     {
         /* We don't want this in the CMS */
         if ($this->isAdminURL()) {
@@ -27,26 +31,26 @@ class BootstrapFormField extends Extension
         $textareafield      = 'SilverStripe\\Forms\\TextareaField';
         $formaction         = 'SilverStripe\\Forms\\FormAction';
 
-        if (!$form_field->getTemplate()) {
-            if ($form_field instanceof $checkboxsetfield) {
-                $form_field->setTemplate('Forms/BootstrapCheckboxSetField');
-            } elseif ($form_field instanceof $optionsetfield) {
-                $form_field->setTemplate('Forms/BootstrapOptionsetField');
-            }
-        }
-
-        if ($form_field instanceof $checkboxfield) {
+        if ($formField instanceof $checkboxsetfield) {
+            $formField->setTemplate('Forms/BootstrapCheckboxSetField');
+        } elseif ($formField instanceof $optionsetfield) {
+            $formField->setTemplate('Forms/BootstrapOptionsetField');
+        } elseif ($formField instanceof $checkboxfield) {
+            // echo '<pre>';
+            // print_r($formField->getTemplate());
+            // echo '</pre>';
+            // exit();
             // We overwrite default CheckboxField_holder.ss
-        } elseif ($form_field instanceof $textfield ||
-            $form_field instanceof $dropdownfield ||
-            $form_field instanceof $textareafield
+        } elseif ($formField instanceof $textfield ||
+            $formField instanceof $dropdownfield ||
+            $formField instanceof $textareafield
         ) {
-            $form_field->addExtraClass('form-control');
-        } elseif ($form_field instanceof $formaction) {
-            if ($form_field->getAttribute('type') == 'submit') {
-                $form_field->addExtraClass('btn btn-primary');
+            $formField->addExtraClass('form-control');
+        } elseif ($formField instanceof $formaction) {
+            if ($formField->getAttribute('type') == 'submit') {
+                $formField->addExtraClass('btn btn-primary');
             } else {
-                $form_field->addExtraClass('btn btn-default btn-secondary');
+                $formField->addExtraClass('btn btn-default btn-secondary');
             }
         }
     }
